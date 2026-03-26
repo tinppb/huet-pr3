@@ -1,0 +1,81 @@
+{
+  "generated_at": "2026-03-26T16:55:55.965004",
+  "overview": {
+    "total_reviews": 51668,
+    "total_hotels": 96,
+    "avg_star": 4.68,
+    "pct_positive": 93.6,
+    "pct_negative": 2.5
+  },
+  "top_hotels": [
+    {
+      "hotel_name": "Charming Riverside Hotel",
+      "avg_star": 5.0,
+      "composite_score": 150.0,
+      "total_reviews": 290
+    },
+    {
+      "hotel_name": "Hue Charming",
+      "avg_star": 5.0,
+      "composite_score": 150.0,
+      "total_reviews": 228
+    },
+    {
+      "hotel_name": "Hue Ancient Town Homestay",
+      "avg_star": 5.0,
+      "composite_score": 150.0,
+      "total_reviews": 9
+    },
+    {
+      "hotel_name": "www.tripadvisor.com",
+      "avg_star": 5.0,
+      "composite_score": 150.0,
+      "total_reviews": 3706
+    },
+    {
+      "hotel_name": "Maily Hostel",
+      "avg_star": 5.0,
+      "composite_score": 150.0,
+      "total_reviews": 14
+    }
+  ],
+  "worst_hotels": [
+    {
+      "hotel_name": "Jade Hotel",
+      "avg_star": 4.21,
+      "composite_score": 126.7,
+      "total_reviews": 2538
+    },
+    {
+      "hotel_name": "Villa Hue",
+      "avg_star": 4.19,
+      "composite_score": 126.15,
+      "total_reviews": 179
+    },
+    {
+      "hotel_name": "Carnosa Hotel",
+      "avg_star": 4.17,
+      "composite_score": 125.49,
+      "total_reviews": 24
+    },
+    {
+      "hotel_name": "Banyan Tree Lang Co",
+      "avg_star": 4.17,
+      "composite_score": 125.28,
+      "total_reviews": 3040
+    },
+    {
+      "hotel_name": "The Beach Bar Hue",
+      "avg_star": 4.15,
+      "composite_score": 123.35,
+      "total_reviews": 115
+    }
+  ],
+  "triptype_avg_star": {
+    "Solo": 4.72,
+    "Friends": 4.72,
+    "Couple": 4.69,
+    "Family": 4.66,
+    "Business": 4.45
+  }
+}

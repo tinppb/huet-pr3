@@ -1,0 +1,97 @@
+﻿hotel_name,total_reviews,avg_star,pct_positive,pct_negative,pct_neutral,contradictions,composite_score,rank
+Charming Riverside Hotel,290,5.0,100.0,0.0,0.0,0,150.0,1
+Hue Charming,228,5.0,100.0,0.0,0.0,0,150.0,2
+Hue Ancient Town Homestay,9,5.0,100.0,0.0,0.0,0,150.0,3
+www.tripadvisor.com,3706,5.0,100.0,0.0,0.0,0,150.0,4
+Maily Hostel,14,5.0,100.0,0.0,0.0,0,150.0,5
+Unknown,2167,5.0,100.0,0.0,0.0,0,150.0,6
+Why Not Hostel,211,5.0,100.0,0.0,0.0,0,150.0,7
+Vietnam Backpacker Hostels Hue,380,5.0,100.0,0.0,0.0,0,150.0,8
+Silk Path Grand Hue Hotel,193,5.0,100.0,0.0,0.0,0,150.0,9
+Shark Homestay,32,5.0,100.0,0.0,0.0,0,150.0,10
+Than Thien Hotel Friendly Hotel,737,5.0,100.0,0.0,0.0,0,150.0,11
+Hue Homestay Riverside,6,5.0,100.0,0.0,0.0,0,150.0,12
+Kha Hotel,24,5.0,100.0,0.0,0.0,0,150.0,13
+Kly Boutique Hue,166,5.0,100.0,0.0,0.0,0,150.0,14
+Tam Family Homestay hu,52,4.98,100.0,0.0,0.0,0,149.6,15
+Hue Sweethouse Homestay,60,4.98,100.0,0.0,0.0,0,149.6,16
+Hue Rustic Homestay Apartment,14,4.93,100.0,0.0,0.0,0,148.6,17
+HillSide Homestay Hue,14,4.93,100.0,0.0,0.0,0,148.6,18
+Hue Riverside Villa,323,4.94,99.38,0.31,0.31,0,148.55,19
+Tam Tinh Vien Homestay,49,4.9,100.0,0.0,0.0,0,148.0,20
+A maze House,21,4.9,100.0,0.0,0.0,0,148.0,21
+Jade Scene Hotel,276,4.91,98.55,0.36,1.09,0,147.69,22
+Hue Sweethouse 2 Homestay,40,4.92,97.5,0.0,2.5,0,147.65,23
+New World Hotel,8,4.88,100.0,0.0,0.0,0,147.6,24
+Hotel La Perle Hue,791,4.89,99.12,0.38,0.51,0,147.46,25
+The Scarlett Boutique Hotel,961,4.89,98.96,0.21,0.83,0,147.45,26
+Eva Homestay,106,4.89,98.11,0.94,0.94,0,147.05,27
+Hue Nino Hotel,1291,4.88,97.99,0.54,1.47,0,146.89,28
+Sunny B Hotel,332,4.89,97.89,1.81,0.3,0,146.8,29
+Amy Hotel and Apartment Hu,6,4.83,100.0,0.0,0.0,0,146.6,30
+Amy Hostel Hue,18,4.83,100.0,0.0,0.0,0,146.6,31
+Hue Happy Homestay,251,4.85,98.41,0.0,1.59,0,146.52,32
+Ks Nam Phuong Riverside Villa,84,4.88,97.62,2.38,0.0,0,146.41,33
+Casablanca Hotel,294,4.86,97.28,0.34,2.38,0,146.32,34
+Senna Hue Hotel,291,4.86,97.59,1.03,1.37,0,146.27,35
+Holiday Diamond Hotel,1858,4.84,98.22,0.22,1.56,0,146.22,36
+Sunny Fine Guesthouse,151,4.85,97.35,0.0,2.65,0,146.2,37
+Minh Tam Guest House,119,4.87,96.64,1.68,1.68,0,146.06,38
+EMM Hotel Hue,1450,4.84,97.86,0.69,1.45,0,146.02,39
+Hong Thien Ruby Hotel,390,4.83,97.69,0.77,1.54,0,145.75,40
+The Purple Hue BnB Central Hub,29,4.86,96.55,3.45,0.0,0,145.48,41
+Friendly House,13,4.77,100.0,0.0,0.0,0,145.4,42
+Hue Serene Palace Hotel,2402,4.8,97.92,0.29,1.79,0,145.32,43
+Alba Wellness Resort By Fusion,216,4.84,95.83,1.39,2.78,0,145.27,44
+Freedom Hostel,96,4.82,96.88,1.04,2.08,0,145.26,45
+Tigon Hostel,145,4.82,97.24,2.07,0.69,0,145.16,46
+Thanh Lich Hue Hotel,635,4.8,96.22,1.57,2.2,0,144.55,47
+The Dreamers,16,4.81,93.75,0.0,6.25,0,144.32,48
+Indochine Palace,1892,4.77,96.3,1.16,2.54,0,144.06,49
+Vedana Lagoon Resort Spa,1000,4.78,95.7,1.3,3.0,0,144.05,50
+Phong Lan Wild Orchid Guesthouse,164,4.74,95.73,0.61,3.66,0,143.4,51
+ORCHID HOTEL,2275,4.73,95.82,1.1,3.08,0,143.13,52
+Azerai La Residence Hue,2422,4.73,95.58,1.16,3.26,0,143.04,53
+TOVO Hostel,55,4.76,94.55,3.64,1.82,0,142.84,54
+Melia Vinpearl Hue,702,4.75,94.02,2.14,3.85,0,142.78,55
+Pilgrimage Village Boutique Resort Spa,2389,4.71,94.22,1.47,4.31,0,142.17,56
+Angsana Lang Co,1980,4.7,94.6,2.17,3.23,0,141.95,57
+Hue Holiday Hotel,254,4.65,96.85,0.79,2.36,0,141.9,58
+Khe Sanh Homestay,132,4.7,93.94,1.52,4.55,0,141.88,59
+Laguna Lang Co,62,4.69,91.94,4.84,3.23,0,140.41,60
+Maison Vu Tri Vien,13,4.69,92.31,7.69,0.0,0,139.96,61
+Thanh Lich Royal Boutique Hotel,779,4.64,91.27,2.44,6.29,0,139.69,62
+Bonjour Hostel,107,4.66,92.52,6.54,0.93,0,139.65,63
+Buncha House,12,4.67,91.67,8.33,0.0,0,139.24,64
+Hue Family Boutique Homestay,10,4.7,90.0,10.0,0.0,0,139.0,65
+Moon Sun Hotel,48,4.62,89.58,2.08,8.33,0,138.86,66
+Lapochine Beach Resort,848,4.57,92.81,2.12,5.07,0,138.82,67
+Rosaleen Boutique Hotel,1170,4.58,91.97,3.59,4.44,0,138.47,68
+Eldora Hotel,992,4.55,91.43,2.12,6.45,0,138.0,69
+Sunshine Hostel,84,4.62,89.29,5.95,4.76,0,138.0,70
+Romance Hotel,536,4.52,92.35,1.49,6.16,0,137.81,71
+Minh Thai Guesthouse,65,4.6,87.69,3.08,9.23,0,137.69,72
+Sunshine Hostel 3 Hue,207,4.56,90.34,6.28,3.38,0,137.05,73
+L Indochine Hotel,13,4.54,92.31,7.69,0.0,0,136.95,74
+Timothy Homestay,28,4.61,89.29,10.71,0.0,0,136.84,75
+TTC Imperial Hotel,1507,4.53,89.58,3.58,6.83,0,136.76,76
+April Hostel,39,4.54,87.18,5.13,7.69,0,135.93,77
+Alba Spa Hotel,636,4.49,88.36,2.99,8.65,0,135.71,78
+New Valentine Hotel,407,4.46,89.93,4.42,5.65,0,135.3,79
+Hong Thien Backpackers Hotel,274,4.48,87.23,3.65,9.12,0,135.04,80
+Kim s Homestay,54,4.52,87.04,7.41,5.56,0,135.03,81
+Muong Thanh Holiday Hue Hotel,654,4.46,87.0,1.68,11.31,0,134.96,82
+Vina Hotel Hue,350,4.45,88.57,3.14,8.29,0,134.94,83
+Hue Boutique Homestay,57,4.4,84.21,3.51,12.28,0,132.56,84
+Laurel Hotel Hue,12,4.42,83.33,8.33,8.33,0,131.73,85
+The Chum Boutique,13,4.38,84.62,7.69,7.69,0,131.45,86
+Thanh An Guesthouse,80,4.35,85.0,6.25,8.75,0,131.25,87
+Hotel Saigon Morin,1531,4.28,84.0,4.25,11.76,0,129.95,88
+Gold Hotel Hue,765,4.24,83.01,4.58,12.42,0,128.79,89
+Ngoc Hung Backpackers Hotel,117,4.18,84.62,5.98,9.4,0,127.79,90
+Sala Homestay Hue,72,4.19,83.33,6.94,9.72,0,127.41,91
+Jade Hotel,2538,4.21,81.76,10.13,8.12,0,126.7,92
+Villa Hue,179,4.19,78.21,5.59,16.2,0,126.15,93
+Carnosa Hotel,24,4.17,79.17,8.33,12.5,0,125.49,94
+Banyan Tree Lang Co,3040,4.17,80.46,11.28,8.26,0,125.28,95
+The Beach Bar Hue,115,4.15,74.78,10.43,14.78,0,123.35,96
