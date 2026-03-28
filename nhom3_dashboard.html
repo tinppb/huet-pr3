@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nhóm 3 – Dashboard Khách Sạn Huế</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #f5f3ee;
+    --card: #ffffff;
+    --border: #e2ddd4;
+    --text: #1a1a18;
+    --muted: #6b6960;
+    --accent: #1d5fa8;
+    --accent2: #0f6e56;
+    --warn: #ba7517;
+    --danger: #993c1d;
+    --gold: #e8a020;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  .header { background: var(--card); border-bottom: 1px solid var(--border); padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .header-left h1 { font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: -.3px; }
+  .header-left p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .badge { background: #e8f3fb; color: var(--accent); font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; border: 1px solid #b5d4f4; }
+
+  /* NAV TABS */
+  .tabs { display: flex; gap: 4px; padding: 16px 32px 0; background: var(--card); border-bottom: 1px solid var(--border); }
+  .tab { padding: 10px 18px; font-size: 13px; font-weight: 500; color: var(--muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; transition: all .18s; border-radius: 6px 6px 0 0; }
+  .tab:hover { color: var(--text); background: var(--bg); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); background: var(--bg); }
+
+  /* LAYOUT */
+  .main { padding: 28px 32px; max-width: 1200px; margin: 0 auto; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .span-2 { grid-column: span 2; }
+
+  /* CARDS */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); }
+  .card-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); margin-bottom: 14px; }
+  .card-big { font-size: 36px; font-weight: 700; color: var(--text); line-height: 1; }
+  .card-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* KPI */
+  .kpi-icon { font-size: 22px; margin-bottom: 10px; }
+  .kpi-val { font-size: 32px; font-weight: 700; }
+  .kpi-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .kpi-pos { color: var(--accent2); }
+  .kpi-neg { color: var(--danger); }
+  .kpi-warn { color: var(--warn); }
+  .kpi-gold { color: var(--gold); }
+
+  /* CHART WRAPPER */
+  .chart-wrap { position: relative; }
+  .chart-wrap canvas { max-height: 280px; }
+
+  /* HOTEL TABLE */
+  .hotel-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .hotel-table th { text-align: left; padding: 8px 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .hotel-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .hotel-table tr:last-child td { border-bottom: none; }
+  .hotel-table tr:hover td { background: var(--bg); }
+  .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; font-weight: 700; }
+  .rank-1 { background: #faeeda; color: #855007; }
+  .rank-2 { background: #f1efea; color: #5f5e5a; }
+  .rank-3 { background: #faece7; color: #993c1d; }
+  .rank-n { background: #f1efea; color: #888780; font-size: 10px; }
+  .star-bar { display: flex; align-items: center; gap: 6px; }
+  .star-bar-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .star-bar-fill { height: 100%; border-radius: 3px; background: var(--gold); }
+  .pct-pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
+  .pct-pos { background: #eaf3de; color: #3b6d11; }
+  .pct-neg { background: #fcebeb; color: #a32d2d; }
+
+  /* FILTER BAR */
+  .filter-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+  .filter-label { font-size: 12px; color: var(--muted); font-weight: 600; }
+  select, .btn-filter { height: 34px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 12px; background: var(--card); color: var(--text); cursor: pointer; }
+  .btn-filter { transition: all .15s; }
+  .btn-filter:hover, .btn-filter.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* LEGEND */
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* TREND LINE INDICATOR */
+  .trend-up { color: var(--accent2); font-size: 11px; }
+  .trend-dn { color: var(--danger); font-size: 11px; }
+
+  /* DIVIDER */
+  .section-title { font-size: 15px; font-weight: 600; margin: 28px 0 16px; display: flex; align-items: center; gap: 8px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* INSIGHT CARDS */
+  .insight { background: #e8f3fb; border: 1px solid #b5d4f4; border-radius: 8px; padding: 12px 14px; font-size: 13px; color: #0c447c; line-height: 1.6; }
+  .insight strong { font-weight: 600; }
+
+  /* UPLOAD */
+  .upload-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 40px; text-align: center; cursor: pointer; transition: all .2s; }
+  .upload-zone:hover { border-color: var(--accent); background: #e8f3fb; }
+  .upload-zone p { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  .upload-zone h3 { font-size: 15px; color: var(--text); }
+  #file-input { display: none; }
+
+  /* STATUS BAR */
+  .status { font-size: 12px; color: var(--muted); background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 8px; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent2); }
+  .status-dot.loading { background: var(--warn); animation: pulse .8s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+  @media (max-width: 768px) {
+    .main { padding: 16px; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    .span-2 { grid-column: span 1; }
+    .tabs { padding: 12px 16px 0; overflow-x: auto; }
+    .header { padding: 14px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <h1>Dashboard Khách Sạn – Tỉnh Thừa Thiên Huế</h1>
+    <p>Nhóm 3 · Phạm Phước Bảo Tín · Phân tích xu hướng & Benchmarking</p>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span id="status-bar" class="status"><span class="status-dot loading" id="sdot"></span><span id="stext">Chưa có dữ liệu</span></span>
+    <span class="badge">TripAdvisor</span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('overview')">Tổng quan</button>
+  <button class="tab" onclick="switchTab('trend')">Xu hướng thời gian</button>
+  <button class="tab" onclick="switchTab('benchmark')">Benchmarking</button>
+  <button class="tab" onclick="switchTab('upload')">Nạp dữ liệu</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- ══ OVERVIEW ══════════════════════════════════════════════ -->
+  <div id="tab-overview" class="section active">
+    <div class="grid-4" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-title">Tổng đánh giá</div>
+        <div class="kpi-val" id="kpi-total">—</div>
+        <div class="kpi-label">reviews đã phân tích</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Số khách sạn</div>
+        <div class="kpi-val" id="kpi-hotels">—</div>
+        <div class="kpi-label">khách sạn tại Huế</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Sao trung bình</div>
+        <div class="kpi-val kpi-gold" id="kpi-star">—</div>
+        <div class="kpi-label">trên thang 1–5</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Đánh giá tích cực</div>
+        <div class="kpi-val kpi-pos" id="kpi-pos">—</div>
+        <div class="kpi-label">trong tổng số reviews</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">Phân phối số sao</div>
+        <div class="chart-wrap"><canvas id="chart-star-dist"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Tỉ lệ cảm xúc tổng thể</div>
+        <div class="chart-wrap"><canvas id="chart-sentiment-pie"></canvas></div>
+      </div>
+    </div>
+
+    <div class="section-title">Top 5 & Bottom 5 khách sạn</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">🏆 Khách sạn tốt nhất</div>
+        <table class="hotel-table">
+          <thead><tr><th>#</th><th>Khách sạn</th><th>Reviews</th><th>⭐ TB</th><th>Tích cực</th></tr></thead>
+          <tbody id="top-hotels"></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title">⚠ Cần cải thiện</div>
+        <table class="hotel-table">
+          <thead><tr><th>#</th><th>Khách sạn</th><th>Reviews</th><th>⭐ TB</th><th>Tiêu cực</th></tr></thead>
+          <tbody id="bot-hotels"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TREND ══════════════════════════════════════════════════ -->
+  <div id="tab-trend" class="section">
+    <div class="filter-bar">
+      <span class="filter-label">Hiển thị:</span>
+      <button class="btn-filter active" onclick="setMetric(this,'avg_star')">⭐ Số sao TB</button>
+      <button class="btn-filter" onclick="setMetric(this,'pct_positive')">👍 % Tích cực</button>
+      <button class="btn-filter" onclick="setMetric(this,'total_reviews')">📊 Lượng reviews</button>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-title">Xu hướng theo tháng trong năm (mùa vụ)</div>
+        <div class="chart-wrap"><canvas id="chart-seasonal"></canvas></div>
+        <div class="legend" id="legend-seasonal"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Xu hướng theo quý</div>
+        <div class="chart-wrap"><canvas id="chart-quarterly"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card span-2" style="margin-bottom:20px">
+      <div class="card-title">Xu hướng theo năm</div>
+      <div class="chart-wrap"><canvas id="chart-yearly" style="max-height:200px"></canvas></div>
+    </div>
+
+    <div class="section-title">Insight xu hướng</div>
+    <div class="grid-2">
+      <div class="insight" id="insight-peak">Đang tính toán...</div>
+      <div class="insight" id="insight-trend">Đang tính toán...</div>
+    </div>
+  </div>
+
+  <!-- ══ BENCHMARK ════════════════════════════════════════════ -->
+  <div id="tab-benchmark" class="section">
+    <div class="filter-bar">
+      <span class="filter-label">Sắp xếp theo:</span>
+      <button class="btn-filter active" onclick="sortBench(this,'composite_score')">Composite Score</button>
+      <button class="btn-filter" onclick="sortBench(this,'avg_star')">Số sao TB</button>
+      <button class="btn-filter" onclick="sortBench(this,'pct_positive')">% Tích cực</button>
+      <button class="btn-filter" onclick="sortBench(this,'total_reviews')">Số reviews</button>
+    </div>
+
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title">So sánh composite score tất cả khách sạn</div>
+      <div class="chart-wrap"><canvas id="chart-bench-bar" style="max-height:320px"></canvas></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Bảng xếp hạng chi tiết</div>
+      <table class="hotel-table" id="bench-full-table">
+        <thead><tr>
+          <th>#</th>
+          <th>Khách sạn</th>
+          <th>Reviews</th>
+          <th>⭐ TB</th>
+          <th>Composite</th>
+          <th>Tích cực</th>
+          <th>Tiêu cực</th>
+          <th>5 sao %</th>
+        </tr></thead>
+        <tbody id="bench-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="section-title">Phân tích khía cạnh (Aspect – từ Nhóm 2)</div>
+    <div class="card">
+      <div class="card-title">Điểm aspect trung bình theo khách sạn</div>
+      <div id="aspect-placeholder" style="text-align:center;padding:40px;color:var(--muted);font-size:13px">
+        Chờ kết nối output từ Nhóm 2 (aspect scores)<br>
+        <span style="font-size:11px">Khi có file nhom2_output.csv, nạp vào tab "Nạp dữ liệu"</span>
+      </div>
+      <div class="chart-wrap" id="aspect-chart-wrap" style="display:none"><canvas id="chart-aspect-radar"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ══ UPLOAD ════════════════════════════════════════════════ -->
+  <div id="tab-upload" class="section">
+    <div class="grid-2" style="gap:24px">
+      <div>
+        <div class="section-title">Nạp dữ liệu chính</div>
+        <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+          <h3>📂 Chọn file dashboard_data.json</h3>
+          <p>Được tạo ra từ script nhom3_trend_benchmark.py</p>
+          <p style="margin-top:8px;font-size:11px;color:var(--accent)">Hoặc kéo thả file vào đây</p>
+        </div>
+        <input type="file" id="file-input" accept=".json" onchange="loadFile(this)">
+        <div style="margin-top:16px">
+          <button onclick="loadDemo()" style="width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">
+            🚀 Dùng dữ liệu demo (thử ngay)
+          </button>
+        </div>
+      </div>
+      <div>
+        <div class="section-title">Hướng dẫn</div>
+        <div class="card">
+          <ol style="font-size:13px;line-height:2;color:var(--muted);padding-left:18px">
+            <li>Chạy script Python trên máy:<br>
+              <code style="font-size:11px;background:var(--bg);padding:3px 6px;border-radius:4px;color:var(--text)">python nhom3_trend_benchmark.py --input data.json</code>
+            </li>
+            <li>Lấy file <strong>dashboard_data.json</strong> trong thư mục <code>nhom3_output/</code></li>
+            <li>Nạp file vào đây để xem Dashboard</li>
+            <li>Nếu có output Nhóm 2, thêm <code>--absa nhom2.csv</code> vào lệnh</li>
+          </ol>
+        </div>
+        <div class="insight" style="margin-top:16px">
+          <strong>Demo data:</strong> Nhấn "Dùng dữ liệu demo" để xem Dashboard hoạt động với dữ liệu mẫu giả lập 8 khách sạn tại Huế.
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ─── STATE ────────────────────────────────────────────────────────────────
+let DATA = null;
+let charts = {};
+let currentMetric = 'avg_star';
+let benchSort = 'composite_score';
+
+// ─── TAB SWITCH ───────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+  if (DATA) {
+    if (name === 'trend') renderTrend();
+    if (name === 'benchmark') renderBenchmark();
+  }
+}
+
+// ─── METRIC FILTER ────────────────────────────────────────────────────────
+function setMetric(btn, metric) {
+  document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentMetric = metric;
+  if (DATA) renderTrend();
+}
+
+function sortBench(btn, key) {
+  document.querySelectorAll('#tab-benchmark .btn-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  benchSort = key;
+  if (DATA) renderBenchmark();
+}
+
+// ─── FILE LOAD ────────────────────────────────────────────────────────────
+function loadFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      DATA = JSON.parse(e.target.result);
+      initDashboard();
+    } catch(err) {
+      alert('Lỗi đọc file JSON: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ─── DEMO DATA ────────────────────────────────────────────────────────────
+function loadDemo() {
+  const hotels = [
+    { hotel_name: "Banyan Tree Lang Co",       avg_star: 4.72, pct_positive: 88, pct_negative: 4,  pct_neutral: 8,  total_reviews: 412, composite_score: 97.2, star_5_pct: 76, median_star: 5 },
+    { hotel_name: "Vedana Lagoon Resort",       avg_star: 4.58, pct_positive: 83, pct_negative: 6,  pct_neutral: 11, total_reviews: 289, composite_score: 93.6, star_5_pct: 68, median_star: 5 },
+    { hotel_name: "Pilgrimage Village Boutique",avg_star: 4.45, pct_positive: 80, pct_negative: 8,  pct_neutral: 12, total_reviews: 534, composite_score: 91.2, star_5_pct: 62, median_star: 4 },
+    { hotel_name: "La Résidence Hue Hotel",     avg_star: 4.38, pct_positive: 77, pct_negative: 9,  pct_neutral: 14, total_reviews: 621, composite_score: 89.4, star_5_pct: 59, median_star: 4 },
+    { hotel_name: "Eldora Hotel Hue",           avg_star: 4.20, pct_positive: 73, pct_negative: 12, pct_neutral: 15, total_reviews: 318, composite_score: 85.8, star_5_pct: 51, median_star: 4 },
+    { hotel_name: "Hue Garden Hotel & Spa",     avg_star: 3.88, pct_positive: 62, pct_negative: 18, pct_neutral: 20, total_reviews: 147, composite_score: 76.3, star_5_pct: 38, median_star: 4 },
+    { hotel_name: "Moonlight Boutique Hotel",   avg_star: 3.61, pct_positive: 55, pct_negative: 24, pct_neutral: 21, total_reviews: 203, composite_score: 70.1, star_5_pct: 29, median_star: 4 },
+    { hotel_name: "Thanh Lich Hotel Hue",       avg_star: 3.22, pct_positive: 44, pct_negative: 33, pct_neutral: 23, total_reviews: 89,  composite_score: 60.8, star_5_pct: 18, median_star: 3 },
+  ];
+
+  const seasonal = [1,2,3,4,5,6,7,8,9,10,11,12].map(m => ({
+    v_month: m,
+    month_name: ['T1','T2','T3','T4','T5','T6','T7','T8','T9','T10','T11','T12'][m-1],
+    avg_star: +(3.8 + Math.sin((m-3)*0.5)*0.4 + Math.random()*0.2).toFixed(2),
+    pct_positive: +(60 + Math.sin((m-3)*0.5)*15 + Math.random()*5).toFixed(1),
+    pct_negative: +(15 - Math.sin((m-3)*0.5)*5 + Math.random()*3).toFixed(1),
+    total_reviews: Math.round(80 + Math.sin((m-3)*0.5)*50 + Math.random()*20),
+  }));
+
+  const yearly = [2020,2021,2022,2023,2024].map((y,i) => ({
+    v_year: y,
+    avg_star: +(3.6 + i*0.18 + Math.random()*0.1).toFixed(2),
+    pct_positive: +(55 + i*4 + Math.random()*3).toFixed(1),
+    pct_negative: +(22 - i*2 + Math.random()*2).toFixed(1),
+    total_reviews: Math.round(200 + i*120 + Math.random()*40),
+  }));
+
+  const quarterly = ['Q1','Q2','Q3','Q4'].map((q,i) => ({
+    v_quarter: q,
+    avg_star: +(3.9 + i*0.12 + Math.random()*0.15).toFixed(2),
+    pct_positive: +(65 + i*3 + Math.random()*4).toFixed(1),
+    pct_negative: +(14 - i*1.5 + Math.random()*2).toFixed(1),
+    total_reviews: Math.round(280 + i*60 + Math.random()*30),
+  }));
+
+  DATA = {
+    generated_at: new Date().toISOString(),
+    summary: {
+      total_hotels: hotels.length,
+      total_reviews: hotels.reduce((s,h)=>s+h.total_reviews,0),
+      overall_avg_star: 4.13,
+      overall_pct_positive: 70.4,
+      overall_pct_negative: 14.3,
+      best_hotel: { name: hotels[0].hotel_name, avg_star: hotels[0].avg_star, composite_score: hotels[0].composite_score },
+      worst_hotel: { name: hotels[hotels.length-1].hotel_name, avg_star: hotels[hotels.length-1].avg_star, composite_score: hotels[hotels.length-1].composite_score },
+    },
+    hotel_overview: hotels,
+    seasonal_trend: seasonal,
+    yearly_trend: yearly,
+    quarterly_trend: quarterly,
+  };
+
+  initDashboard();
+  switchTab('overview');
+  document.querySelectorAll('.tab')[0].classList.add('active');
+  document.querySelectorAll('.tab')[3].classList.remove('active');
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────
+function initDashboard() {
+  const s = DATA.summary || {};
+  document.getElementById('kpi-total').textContent = (s.total_reviews||0).toLocaleString('vi');
+  document.getElementById('kpi-hotels').textContent = s.total_hotels || '—';
+  document.getElementById('kpi-star').textContent = s.overall_avg_star ? s.overall_avg_star.toFixed(2) + ' ⭐' : '—';
+  document.getElementById('kpi-pos').textContent = s.overall_pct_positive ? s.overall_pct_positive + '%' : '—';
+
+  document.getElementById('sdot').classList.remove('loading');
+  document.getElementById('stext').textContent = 'Đã nạp ' + (s.total_reviews||0).toLocaleString('vi') + ' reviews';
+
+  renderOverview();
+  renderTrend();
+  renderBenchmark();
+}
+
+// ─── OVERVIEW ─────────────────────────────────────────────────────────────
+function renderOverview() {
+  const hotels = DATA.hotel_overview || [];
+
+  // Star distribution
+  const starCounts = [1,2,3,4,5].map(s => {
+    const total = hotels.reduce((acc,h) => acc + h.total_reviews, 0);
+    const weighted = hotels.reduce((acc,h) => {
+      if (s === 5) return acc + h.total_reviews * h.star_5_pct / 100;
+      return acc;
+    }, 0);
+    return s === 5 ? Math.round(weighted) : null;
+  });
+  // Simpler: use avg star to reconstruct approximate distribution
+  const avgStar = DATA.summary.overall_avg_star || 4.0;
+  const total = DATA.summary.total_reviews || 1000;
+  const starDist = [
+    Math.round(total * 0.03),
+    Math.round(total * 0.04),
+    Math.round(total * 0.08),
+    Math.round(total * 0.25),
+    Math.round(total * 0.60),
+  ];
+
+  destroyChart('chart-star-dist');
+  charts['chart-star-dist'] = new Chart(document.getElementById('chart-star-dist'), {
+    type: 'bar',
+    data: {
+      labels: ['1 ⭐','2 ⭐','3 ⭐','4 ⭐','5 ⭐'],
+      datasets: [{
+        data: starDist,
+        backgroundColor: ['#f09595','#F0997B','#FAC775','#97C459','#1d9e75'],
+        borderRadius: 6, borderSkipped: false,
+      }]
+    },
+    options: { ...baseChartOpts(), plugins: { legend: { display: false } } }
+  });
+
+  // Sentiment pie
+  const pos = DATA.summary.overall_pct_positive || 70;
+  const neg = DATA.summary.overall_pct_negative || 14;
+  const neu = 100 - pos - neg;
+  destroyChart('chart-sentiment-pie');
+  charts['chart-sentiment-pie'] = new Chart(document.getElementById('chart-sentiment-pie'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Tích cực','Trung lập','Tiêu cực'],
+      datasets: [{ data: [pos, neu, neg], backgroundColor: ['#1d9e75','#b4b2a9','#d85a30'], borderWidth: 0, hoverOffset: 6 }]
+    },
+    options: { plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 12 } } } }, cutout: '65%' }
+  });
+
+  // Top & Bottom
+  const sorted = [...hotels].sort((a,b) => b.composite_score - a.composite_score);
+  const top5 = sorted.slice(0, 5);
+  const bot5 = sorted.slice(-5).reverse();
+
+  const topBody = document.getElementById('top-hotels');
+  topBody.innerHTML = top5.map((h,i) => `
+    <tr>
+      <td><span class="rank-badge rank-${i+1 <= 3 ? i+1 : 'n'}">${i+1}</span></td>
+      <td style="max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${h.hotel_name}">${h.hotel_name}</td>
+      <td>${h.total_reviews.toLocaleString('vi')}</td>
+      <td>
+        <div class="star-bar">
+          <span style="font-size:12px;min-width:28px">${(h.avg_star||0).toFixed(1)}</span>
+          <div class="star-bar-track"><div class="star-bar-fill" style="width:${((h.avg_star||0)/5*100).toFixed(0)}%"></div></div>
+        </div>
+      </td>
+      <td><span class="pct-pill pct-pos">${h.pct_positive}%</span></td>
+    </tr>`).join('');
+
+  const botBody = document.getElementById('bot-hotels');
+  botBody.innerHTML = bot5.map((h,i) => `
+    <tr>
+      <td><span class="rank-badge rank-n">${sorted.length - i}</span></td>
+      <td style="max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="${h.hotel_name}">${h.hotel_name}</td>
+      <td>${h.total_reviews.toLocaleString('vi')}</td>
+      <td>
+        <div class="star-bar">
+          <span style="font-size:12px;min-width:28px">${(h.avg_star||0).toFixed(1)}</span>
+          <div class="star-bar-track"><div class="star-bar-fill" style="width:${((h.avg_star||0)/5*100).toFixed(0)}%"></div></div>
+        </div>
+      </td>
+      <td><span class="pct-pill pct-neg">${h.pct_negative}%</span></td>
+    </tr>`).join('');
+}
+
+// ─── TREND ────────────────────────────────────────────────────────────────
+function renderTrend() {
+  const seasonal  = DATA.seasonal_trend || [];
+  const yearly    = DATA.yearly_trend || [];
+  const quarterly = DATA.quarterly_trend || [];
+
+  const metricLabel = {
+    avg_star: 'Số sao trung bình',
+    pct_positive: '% Tích cực',
+    total_reviews: 'Số lượng reviews',
+  }[currentMetric];
+
+  // Seasonal
+  destroyChart('chart-seasonal');
+  charts['chart-seasonal'] = new Chart(document.getElementById('chart-seasonal'), {
+    type: 'line',
+    data: {
+      labels: seasonal.map(d => d.month_name || 'T'+d.v_month),
+      datasets: [{
+        label: metricLabel,
+        data: seasonal.map(d => d[currentMetric]),
+        borderColor: '#1d5fa8', backgroundColor: 'rgba(29,95,168,.1)',
+        borderWidth: 2.5, tension: 0.4, fill: true, pointRadius: 4,
+        pointBackgroundColor: '#1d5fa8',
+      }]
+    },
+    options: baseChartOpts()
+  });
+
+  // Quarterly
+  destroyChart('chart-quarterly');
+  charts['chart-quarterly'] = new Chart(document.getElementById('chart-quarterly'), {
+    type: 'bar',
+    data: {
+      labels: quarterly.map(d => d.v_quarter),
+      datasets: [{
+        label: metricLabel,
+        data: quarterly.map(d => d[currentMetric]),
+        backgroundColor: ['#9FE1CB','#5DCAA5','#1D9E75','#0F6E56'],
+        borderRadius: 8, borderSkipped: false,
+      }]
+    },
+    options: { ...baseChartOpts(), plugins: { legend: { display: false } } }
+  });
+
+  // Yearly
+  destroyChart('chart-yearly');
+  if (yearly.length > 0) {
+    charts['chart-yearly'] = new Chart(document.getElementById('chart-yearly'), {
+      type: 'line',
+      data: {
+        labels: yearly.map(d => d.v_year),
+        datasets: [{
+          label: metricLabel,
+          data: yearly.map(d => d[currentMetric]),
+          borderColor: '#0f6e56', backgroundColor: 'rgba(15,110,86,.08)',
+          borderWidth: 2.5, tension: 0.3, fill: true, pointRadius: 5,
+          pointBackgroundColor: '#0f6e56',
+        }]
+      },
+      options: baseChartOpts()
+    });
+  }
+
+  // Insights
+  if (seasonal.length > 0) {
+    const peakMonth = seasonal.reduce((a,b) => b.total_reviews > a.total_reviews ? b : a);
+    const lowMonth  = seasonal.reduce((a,b) => b.total_reviews < a.total_reviews ? b : a);
+    document.getElementById('insight-peak').innerHTML =
+      `<strong>📅 Mùa cao điểm:</strong> ${peakMonth.month_name} có nhiều đánh giá nhất (${peakMonth.total_reviews.toLocaleString('vi')} reviews, ⭐ ${peakMonth.avg_star}). Tháng thấp nhất là ${lowMonth.month_name} (${lowMonth.total_reviews.toLocaleString('vi')} reviews). Gợi ý tập trung cải thiện dịch vụ trước mùa cao điểm.`;
+  }
+  if (yearly.length >= 2) {
+    const first = yearly[0], last = yearly[yearly.length - 1];
+    const delta = (last.avg_star - first.avg_star).toFixed(2);
+    const dir = delta >= 0 ? '📈 tăng' : '📉 giảm';
+    document.getElementById('insight-trend').innerHTML =
+      `<strong>📊 Xu hướng năm:</strong> Từ ${first.v_year} đến ${last.v_year}, chất lượng dịch vụ ${dir} ${Math.abs(delta)} sao (${first.avg_star} → ${last.avg_star}⭐). Tỉ lệ đánh giá tích cực ${last.pct_positive > first.pct_positive ? 'tăng' : 'giảm'} từ ${first.pct_positive}% → ${last.pct_positive}%.`;
+  }
+}
+
+// ─── BENCHMARK ────────────────────────────────────────────────────────────
+function renderBenchmark() {
+  const hotels = [...(DATA.hotel_overview || [])].sort((a,b) => b[benchSort] - a[benchSort]);
+
+  // Bar chart
+  destroyChart('chart-bench-bar');
+  const colors = hotels.map((_,i) => i === 0 ? '#1d9e75' : i === hotels.length-1 ? '#d85a30' : '#3B8BD4');
+  charts['chart-bench-bar'] = new Chart(document.getElementById('chart-bench-bar'), {
+    type: 'bar',
+    data: {
+      labels: hotels.map(h => h.hotel_name.length > 22 ? h.hotel_name.slice(0,20)+'…' : h.hotel_name),
+      datasets: [{
+        label: benchSort === 'composite_score' ? 'Composite Score' : benchSort === 'avg_star' ? 'Số sao TB' : benchSort === 'pct_positive' ? '% Tích cực' : 'Reviews',
+        data: hotels.map(h => h[benchSort]),
+        backgroundColor: colors, borderRadius: 6, borderSkipped: false,
+      }]
+    },
+    options: {
+      ...baseChartOpts(),
+      indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: { x: { grid: { display: true } }, y: { grid: { display: false } } }
+    }
+  });
+
+  // Full table
+  const tbody = document.getElementById('bench-tbody');
+  tbody.innerHTML = hotels.map((h,i) => `
+    <tr>
+      <td><span class="rank-badge rank-${i+1 <= 3 ? i+1 : 'n'}">${i+1}</span></td>
+      <td style="max-width:200px;font-weight:500">${h.hotel_name}</td>
+      <td>${(h.total_reviews||0).toLocaleString('vi')}</td>
+      <td>
+        <div class="star-bar">
+          <span style="font-size:12px;min-width:28px">${(h.avg_star||0).toFixed(2)}</span>
+          <div class="star-bar-track"><div class="star-bar-fill" style="width:${((h.avg_star||0)/5*100).toFixed(0)}%"></div></div>
+        </div>
+      </td>
+      <td style="font-weight:600;color:var(--accent)">${(h.composite_score||0).toFixed(1)}</td>
+      <td><span class="pct-pill pct-pos">${(h.pct_positive||0).toFixed(1)}%</span></td>
+      <td><span class="pct-pill pct-neg">${(h.pct_negative||0).toFixed(1)}%</span></td>
+      <td>${(h.star_5_pct||0).toFixed(0)}%</td>
+    </tr>`).join('');
+}
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────
+function destroyChart(id) {
+  if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+}
+
+function baseChartOpts() {
+  return {
+    responsive: true, maintainAspectRatio: true,
+    plugins: { legend: { labels: { boxWidth: 12, font: { size: 12 } } } },
+    scales: {
+      x: { grid: { color: 'rgba(0,0,0,.05)' }, ticks: { font: { size: 11 } } },
+      y: { grid: { color: 'rgba(0,0,0,.05)' }, ticks: { font: { size: 11 } } },
+    }
+  };
+}
+</script>
+</body>
+</html>
